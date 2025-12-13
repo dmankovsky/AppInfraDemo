@@ -46,8 +46,18 @@ fi
 # Install ctlptl if not present
 if ! command -v ctlptl >/dev/null 2>&1; then
     echo -e "${YELLOW}Installing ctlptl...${NC}"
-    CTLPTL_VERSION="0.8.25"
-    curl -fsSL https://github.com/tilt-dev/ctlptl/releases/download/v${CTLPTL_VERSION}/ctlptl.${CTLPTL_VERSION}.$(uname -s)-$(uname -m).tar.gz | \
+    CTLPTL_VERSION="0.8.43"
+    OS=$(uname -s)
+    ARCH=$(uname -m)
+    
+    # Map architecture names
+    if [ "$ARCH" = "x86_64" ]; then
+        ARCH="x86_64"
+    elif [ "$ARCH" = "arm64" ] || [ "$ARCH" = "aarch64" ]; then
+        ARCH="arm64"
+    fi
+    
+    curl -fsSL "https://github.com/tilt-dev/ctlptl/releases/download/v${CTLPTL_VERSION}/ctlptl.${CTLPTL_VERSION}.${OS}-${ARCH}.tar.gz" | \
         sudo tar -xzv -C /usr/local/bin ctlptl
 fi
 
