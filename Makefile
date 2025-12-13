@@ -7,6 +7,7 @@ help:
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 setup:
+	@./scripts/setup.sh
 
 teardown:
 
