@@ -9,12 +9,33 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Check if required components are installed
+# Check if required tools are installed
 echo -e "${BLUE}Checking prerequisites...${NC}"
 
-command -v docker >/dev/null 2>&1 || { echo "Docker is required but not installed. Aborting." >&2; exit 1; }
-command -v kubectl >/dev/null 2>&1 || { echo "kubectl is required but not installed. Aborting." >&2; exit 1; }
-command -v helm >/dev/null 2>&1 || { echo "Helm is required but not installed. Aborting." >&2; exit 1; }
+command -v docker >/dev/null 2>&1 || { echo "❌ Docker is required but not installed. Aborting." >&2; exit 1; }
+
+# Install kubectl if not present
+if ! command -v kubectl >/dev/null 2>&1; then
+    echo -e "${YELLOW}Installing kubectl...${NC}"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/$(uname -m)/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+    else
+        # Linux
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+    fi
+fi
+
+# Install Helm if not present
+if ! command -v helm >/dev/null 2>&1; then
+    echo -e "${YELLOW}Installing Helm...${NC}"
+    curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+fi
+
 
 # Install k3d if not present
 if ! command -v k3d >/dev/null 2>&1; then
