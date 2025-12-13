@@ -10,4 +10,5 @@ setup:
 	@./scripts/setup.sh
 
 teardown:
+	@./scripts/teardown.sh
 
