@@ -98,3 +98,12 @@ echo -e "${GREEN}✓ ArgoCD installed${NC}"
 # ArgoCD admin password
 echo -e "${BLUE}Getting ArgoCD admin password...${NC}"
 ARGOCD_PASSWORD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+
+# Install Traefik (ingress controller, to avoid port forwarding)
+echo -e "${BLUE}Installing Traefik...${NC}"
+# Install Traefik via Helm
+helm repo add traefik https://traefik.github.io/charts
+helm upgrade --install traefik traefik/traefik \
+    -n kube-system \
+    --wait \
+    --timeout 5m
