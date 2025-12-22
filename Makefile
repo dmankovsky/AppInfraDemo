@@ -12,3 +12,13 @@ setup:
 teardown:
 	@./scripts/teardown.sh
 
+dev:
+
+build:
+
+test:
+
+lint:
+
+clean:
+
