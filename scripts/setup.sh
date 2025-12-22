@@ -47,20 +47,20 @@ fi
 if ! command -v ctlptl >/dev/null 2>&1; then
     echo -e "${YELLOW}Installing ctlptl...${NC}"
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS - use Homebrew (most reliable)
+        # intsall on macOS with homebrew
         if command -v brew >/dev/null 2>&1; then
             brew install tilt-dev/tap/ctlptl
         else
-            echo "❌ Homebrew is required on macOS. Please install from https://brew.sh" >&2
+            echo "Homebrew is required on macOS. Please install from https://brew.sh" >&2
             exit 1
         fi
     else
-        # Linux - use Go install
+        # install on Linux with go
         if command -v go >/dev/null 2>&1; then
             go install github.com/tilt-dev/ctlptl/cmd/ctlptl@latest
             sudo mv ~/go/bin/ctlptl /usr/local/bin/ 2>/dev/null || true
         else
-            echo "❌ Go is required to install ctlptl on Linux. Please install Go first." >&2
+            echo "Go is required to install ctlptl on Linux. Please install Go." >&2
             exit 1
         fi
     fi
@@ -83,3 +83,14 @@ echo -e "${BLUE}Waiting for cluster to be ready...${NC}"
 kubectl wait --for=condition=Ready nodes --all --timeout=120s
 
 echo -e "${GREEN}✓ Cluster is ready${NC}"
+
+# Install ArgoCD
+echo -e "${BLUE}Installing ArgoCD...${NC}"
+kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+helm upgrade --install argocd argo/argo-cd \
+    -n argocd \
+    -f helm/argocd/values-argocd.yaml \
+    --wait \
+    --timeout 5m
+
+echo -e "${GREEN}✓ ArgoCD installed${NC}"
