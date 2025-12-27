@@ -9,10 +9,10 @@ help:
 setup:
 	@./scripts/setup.sh
 
-port-forward-argocd: ## Port forward to ArgoCD
+port-forward-argocd:
 	@kubectl port-forward -n argocd svc/argocd-server 8081:443
 
-get-argocd-password: ## Get ArgoCD admin password
+get-argocd-password:
 	@kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
 
 teardown:
@@ -22,7 +22,9 @@ dev:
 	@tilt up
 
 dev-down:
-	@tilt down
+	@tilt down || true
+	@pkill -f "tilt up" || true
+	@echo "Tilt stopped"
 
 build:
 
