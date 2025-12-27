@@ -13,6 +13,7 @@ teardown:
 	@./scripts/teardown.sh
 
 dev:
+	@tilt up
 
 build:
 
@@ -21,4 +22,3 @@ test:
 lint:
 
 clean:
-
