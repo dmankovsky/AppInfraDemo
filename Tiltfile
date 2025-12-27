@@ -52,19 +52,10 @@ local_resource(
 #     labels=['infrastructure'],
 # )
 
-# Port forward to ArgoCD
-k8s_resource(
-    workload='argocd-server',
-    new_name='argocd-ui',
-    port_forwards=['8081:8080'],
-    labels=['access'],
-    resource_deps=['argocd'],
-)
-
 # Display help
 print("""
 Info:
-ArgoCD UI: http://localhost:8081                         
+ArgoCD UI: http://localhost:8081 (run 'make port-forward-argocd' in another terminal)
 Username: admin                                          
-Password: make get-argocd-password 
+Password: make get-argocd-password
 """)
