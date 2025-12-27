@@ -1,4 +1,3 @@
-
 allow_k8s_contexts('k3d-task-app-cluster')
 
 # Create cluster
@@ -55,7 +54,6 @@ local_resource(
 # Display help
 print("""
 Info:
-ArgoCD UI: http://localhost:8081 (run 'make port-forward-argocd' in another terminal)
 Username: admin                                          
 Password: make get-argocd-password
 """)

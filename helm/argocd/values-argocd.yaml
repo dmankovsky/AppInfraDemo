@@ -1,14 +1,14 @@
 # Will be used with: helm install argocd argo/argo-cd -f values-argocd.yaml
 
 global:
-  domain: argocd.local
+  domain: argocd.127.0.0.1.nip.io  # Using nip.io for DNS-free access
 
 server:
   ingress:
     enabled: true
-    ingressClassName: traefik
+    # ingressClassName: traefik
     hosts:
-      - argocd.local
+      - argocd.127.0.0.1.nip.io  # Using nip.io for DNS-free access
     tls: false
   
   resources:
