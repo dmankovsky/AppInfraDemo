@@ -1,0 +1,77 @@
+# Will be used with: helm install argocd argo/argo-cd -f values-argocd.yaml
+
+global:
+  domain: argocd.127.0.0.1.nip.io  # Using nip.io for DNS-free access
+
+server:
+  ingress:
+    enabled: true
+    # ingressClassName: traefik
+    hosts:
+      - argocd.127.0.0.1.nip.io  # Using nip.io for DNS-free access
+    tls: false
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+controller:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+dex:
+  enabled: false
+
+redis:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+applicationSet:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+notifications:
+  enabled: false
+
+configs:
+  params:
+    server.insecure: true
+  
+  repositories: {}
+  
+  rbac:
+    policy.default: role:readonly
+    policy.csv: |
+      p, role:admin, applications, *, */*, allow
+      p, role:admin, clusters, *, *, allow
+      p, role:admin, repositories, *, *, allow
+      g, admin, role:admin
