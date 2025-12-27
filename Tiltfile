@@ -18,7 +18,7 @@ local_resource(
         helm repo update
     ''',
     resource_deps=['cluster'],
-    labels=['infrastructure'],
+    labels=['infra'],
 )
 
 # Install ArgoCD
@@ -34,6 +34,14 @@ local_resource(
     deps=['helm/argocd/values-argocd.yaml'],
     resource_deps=['helm-repos'],
     labels=['infrastructure'],
+)
+
+# Port forward to ArgoCD
+local_resource(
+    'argocd-port-forward',
+    serve_cmd='kubectl port-forward -n argocd svc/argocd-server 8081:443',
+    resource_deps=['argocd'],
+    labels=['access'],
 )
 
 # Install Prometheus/GrafanaHelm
@@ -54,6 +62,7 @@ local_resource(
 # Display help
 print("""
 Info:
+ArgoCD UI: http://localhost:8081 (auto port-forwarded)
 Username: admin                                          
 Password: make get-argocd-password
 """)

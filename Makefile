@@ -14,6 +14,7 @@ get-argocd-password:
 
 dev:
 	@tilt up
+	@port-forward-argocd
 
 dev-down:
 	@tilt down || true
