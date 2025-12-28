@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "task-app.fullname" . }}-backend
+  labels:
+    {{- include "task-app.backend.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "task-app.backend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "task-app.backend.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: backend
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        env:
+        - name: DB_HOST
+          value: {{ tpl .Values.backend.env.DB_HOST . | quote }}
+        - name: DB_PORT
+          value: {{ .Values.backend.env.DB_PORT | quote }}
+        - name: DB_USER
+          value: {{ .Values.backend.env.DB_USER | quote }}
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-postgresql
+              key: password
+        - name: DB_NAME
+          value: {{ .Values.backend.env.DB_NAME | quote }}
+        - name: PORT
+          value: {{ .Values.backend.env.PORT | quote }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.backend.resources | nindent 10 }}
