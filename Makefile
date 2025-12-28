@@ -1,4 +1,4 @@
-.PHONY: help setup teardown dev build test lint clean
+.PHONY: help dev dev-down build-backend build-frontend test lint clean
 
 help:
 	@echo "Usage: make [target]"
@@ -20,8 +20,14 @@ dev-down:
 	@pkill -f "tilt up" || true
 	@echo "Tilt stopped"
 
+build-backend:
+	@cd backend && go build -o main .
+
+build-frontend:
+	@cd frontend && npm run build
 
 build:
+	@make build-backend build-frontend
 
 test:
 

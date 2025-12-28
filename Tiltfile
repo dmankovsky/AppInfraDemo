@@ -44,6 +44,55 @@ local_resource(
     labels=['access'],
 )
 
+# Build backend Docker image
+docker_build(
+    'task-backend',
+    './backend',
+    dockerfile='./backend/Dockerfile',
+    live_update=[
+        sync('./backend', '/app'),
+        run('cd /app && go build -o main .', trigger=['./backend/**/*.go']),
+    ],
+)
+
+# Deploy backend
+k8s_yaml([
+    'backend/k8s/namespace.yaml',
+    'backend/k8s/deployment.yaml',
+    'backend/k8s/service.yaml',
+])
+
+# Port forward to backend
+k8s_resource(
+    'task-backend',
+    port_forwards=['3000:3000'],
+    labels=['app'],
+)
+
+# Build frontend Docker image
+docker_build(
+    'task-frontend',
+    './frontend',
+    dockerfile='./frontend/Dockerfile',
+    live_update=[
+        sync('./frontend/src', '/app/src'),
+        run('cd /app && npm run build', trigger=['./frontend/src/**/*']),
+    ],
+)
+
+# Deploy frontend
+k8s_yaml([
+    'frontend/k8s/deployment.yaml',
+    'frontend/k8s/service.yaml',
+])
+
+# Port forward to frontend
+k8s_resource(
+    'task-frontend',
+    port_forwards=['8080:80'],
+    labels=['app'],
+)
+
 # Install Prometheus/GrafanaHelm
 # local_resource(
 #     'monitoring',
@@ -62,7 +111,14 @@ local_resource(
 # Display help
 print("""
 Info:
+Frontend: http://localhost:8080 (auto port-forwarded)
+
+Backend API: http://localhost:3000 (auto port-forwarded)
+  - Health: http://localhost:3000/health
+  - Metrics: http://localhost:3000/metrics
+  - API: http://localhost:3000/api/tasks
+
 ArgoCD UI: http://localhost:8081 (auto port-forwarded)
-Username: admin                                          
-Password: make get-argocd-password
+  - Username: admin                                          
+  - Password: make get-argocd-password
 """)
