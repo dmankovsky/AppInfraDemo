@@ -5,7 +5,7 @@ local_resource(
     'cluster',
     cmd='ctlptl apply -f cluster/cluster.yaml',
     deps=['cluster/cluster.yaml'],
-    labels=['infrastructure'],
+    labels=['infra'],
 )
 
 # Add helm repos
@@ -33,7 +33,7 @@ local_resource(
     ''',
     deps=['helm/argocd/values-argocd.yaml'],
     resource_deps=['helm-repos'],
-    labels=['infrastructure'],
+    labels=['infra'],
 )
 
 # Port forward to ArgoCD
