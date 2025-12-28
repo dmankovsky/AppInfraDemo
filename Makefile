@@ -23,11 +23,13 @@ dev-down:
 build-backend:
 	@cd backend && go build -o main .
 
-build-frontend:
+install-deps:
+	@cd frontend && npm install
+
+build-frontend: install-deps
 	@cd frontend && npm run build
 
-build:
-	@make build-backend build-frontend
+build: build-backend build-frontend
 
 test:
 
