@@ -58,6 +58,8 @@ docker_build(
 # Deploy backend
 k8s_yaml([
     'backend/k8s/namespace.yaml',
+    'backend/k8s/postgres-deployment.yaml',
+    'backend/k8s/postgres-service.yaml',
     'backend/k8s/deployment.yaml',
     'backend/k8s/service.yaml',
 ])
@@ -67,6 +69,13 @@ k8s_resource(
     'task-backend',
     port_forwards=['3000:3000'],
     labels=['app'],
+    resource_deps=['postgres'],
+)
+
+# Label postgres
+k8s_resource(
+    'postgres',
+    labels=['database'],
 )
 
 # Build frontend Docker image
