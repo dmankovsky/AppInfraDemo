@@ -1,4 +1,4 @@
-.PHONY: help setup teardown dev build test lint clean
+.PHONY: help dev dev-down build-backend build-frontend test lint clean
 
 help:
 	@echo "Usage: make [target]"
@@ -13,6 +13,8 @@ get-argocd-password:
 	@kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
 
 dev:
+	@echo "Checking if cluster exists..."
+	@ctlptl apply -f cluster/cluster.yaml > /dev/null 2>&1 || true
 	@tilt up
 
 dev-down:
@@ -20,8 +22,16 @@ dev-down:
 	@pkill -f "tilt up" || true
 	@echo "Tilt stopped"
 
+build-backend:
+	@cd backend && go build -o main .
 
-build:
+install-frontend-deps:
+	@cd frontend && npm install
+
+build-frontend: install-frontend-deps
+	@cd frontend && npm run build
+
+build: build-backend build-frontend
 
 test:
 
