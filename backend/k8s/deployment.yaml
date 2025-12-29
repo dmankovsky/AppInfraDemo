@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: task-backend
-  namespace: app
+  namespace: application
   labels:
     app: task-backend
 spec:

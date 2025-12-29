@@ -22,6 +22,11 @@ dev-down:
 	@pkill -f "tilt up" || true
 	@echo "Tilt stopped"
 
+cluster-delete:
+	@echo "Deleting cluster..."
+	@k3d cluster delete task-app-cluster || true
+	@echo "Cluster deleted"
+
 build-backend:
 	@cd backend && go build -o main .
 
