@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// Task represents a task in the task management system
 type Task struct {
 	ID          uint           `gorm:"primarykey" json:"id"`
 	Title       string         `gorm:"not null" json:"title"`
@@ -18,7 +17,6 @@ type Task struct {
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
-// AutoMigrate runs database migrations
 func AutoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(&Task{})
 }

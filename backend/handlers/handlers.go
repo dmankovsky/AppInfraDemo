@@ -10,17 +10,14 @@ import (
 	"backend/models"
 )
 
-// TaskHandler handles task-related HTTP requests
 type TaskHandler struct {
 	db *gorm.DB
 }
 
-// NewTaskHandler creates a new task handler
 func NewTaskHandler(db *gorm.DB) *TaskHandler {
 	return &TaskHandler{db: db}
 }
 
-// ListTasks returns all tasks
 func (h *TaskHandler) ListTasks(c *gin.Context) {
 	var tasks []models.Task
 	if err := h.db.Find(&tasks).Error; err != nil {
@@ -30,7 +27,6 @@ func (h *TaskHandler) ListTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, tasks)
 }
 
-// GetTask returns a single task by ID
 func (h *TaskHandler) GetTask(c *gin.Context) {
 	id := c.Param("id")
 	var task models.Task
@@ -45,7 +41,6 @@ func (h *TaskHandler) GetTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// CreateTask creates a new task
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var task models.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
@@ -65,7 +60,6 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, task)
 }
 
-// UpdateTask updates an existing task
 func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	id := c.Param("id")
 	var task models.Task
@@ -101,7 +95,6 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// DeleteTask deletes a task
 func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	id := c.Param("id")
 	var task models.Task
@@ -127,9 +120,7 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Task deleted successfully"})
 }
 
-// HealthCheck returns the health status of the application
 func (h *TaskHandler) HealthCheck(c *gin.Context) {
-	// Check database connection
 	sqlDB, err := h.db.DB()
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{

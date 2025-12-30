@@ -9,7 +9,7 @@ import (
 	"backend/metrics"
 )
 
-// PrometheusMiddleware records HTTP metrics for each request
+// records HTTP metrics for each request
 func PrometheusMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()

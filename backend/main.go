@@ -17,14 +17,14 @@ import (
 )
 
 func main() {
-	// Database configuration
+	// database config
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5432")
 	dbUser := getEnv("DB_USER", "postgres")
 	dbPassword := getEnv("DB_PASSWORD", "postgres")
 	dbName := getEnv("DB_NAME", "taskdb")
 
-	// Connect to database
+	// connect to DB
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
 
@@ -33,17 +33,17 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	// Run migrations
+	// run migrations
 	if err := models.AutoMigrate(db); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
 	}
 
 	log.Println("Database connected and migrations completed")
 
-	// Initialize Gin router
+	// init gin router
 	router := gin.Default()
 
-	// CORS middleware
+	// cors middleware
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -52,16 +52,16 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// Prometheus middleware
+	// prometheus middleware
 	router.Use(middleware.PrometheusMiddleware())
 
-	// Initialize handlers
+	// init handlers
 	taskHandler := handlers.NewTaskHandler(db)
 
-	// Health check endpoint
+	// healthcheck endpoint
 	router.GET("/health", taskHandler.HealthCheck)
 
-	// Prometheus metrics endpoint
+	// prometheus metrics endpoint
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	// API routes
@@ -74,7 +74,7 @@ func main() {
 		api.DELETE("/tasks/:id", taskHandler.DeleteTask)
 	}
 
-	// Start server
+	// start server
 	port := getEnv("PORT", "3000")
 	log.Printf("Server starting on port %s", port)
 	if err := router.Run(":" + port); err != nil {
