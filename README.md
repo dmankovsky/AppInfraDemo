@@ -9,6 +9,8 @@ This approach is a massive improvement of a development workflow. It increases t
 ## Prerequisites
 
 - Docker installed and running
+- Tilt installed (if not, run `curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/master/scripts/install.sh | bash`)
+- Ctlptl installed
 - Git installed
 
 That's it! Tilt will install everything else (kubectl, helm, ctlptl, k3d).
