@@ -13,8 +13,17 @@ get-argocd-password:
 	@kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
 
 dev:
-	@echo "Checking if cluster exists..."
-	@ctlptl apply -f cluster/cluster.yaml > /dev/null 2>&1 || true
+	@which k3d > /dev/null 2>&1 || (echo "Installing k3d..." && brew install k3d)
+	@which ctlptl > /dev/null 2>&1 || (echo "Installing ctlptl..." && brew install tilt-dev/tap/ctlptl)
+	@echo "Creating/ensuring k3d cluster..."
+	@ctlptl apply -f cluster/cluster.yaml
+	@CURRENT_CONTEXT=$$(kubectl config current-context 2>/dev/null); \
+	if [ "$$CURRENT_CONTEXT" = "k3d-task-app-cluster" ]; then \
+		echo "Current context: k3d-task-app-cluster"; \
+	else \
+		echo "Changing context to k3d-task-app-cluster"; \
+		kubectl config use-context k3d-task-app-cluster; \
+	fi
 	@tilt up
 
 dev-down:
